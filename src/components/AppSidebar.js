@@ -27,6 +27,11 @@ const useStyles = makeStyles(theme => ({
 
 function AppSidebar() {
   const classes = useStyles();
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
+
+  function handleListItemClick(event, index) {
+    setSelectedIndex(index);
+  }
 
   return (
     <Drawer
@@ -36,7 +41,9 @@ function AppSidebar() {
       <div className={classes.toolbar} />
       <List>
         <Link underline="none" color="inherit" component={RouterLink} to="/">
-          <ListItem button>
+          <ListItem button
+            selected={selectedIndex === 1}
+            onClick={event => handleListItemClick(event, 1)}>
             <ListItemIcon>
               <Icon>home</Icon>
             </ListItemIcon>
@@ -44,7 +51,9 @@ function AppSidebar() {
           </ListItem>
         </Link>
         <Link underline="none" color="inherit" component={RouterLink} to="/users">
-          <ListItem button>
+          <ListItem button
+            selected={selectedIndex === 2}
+            onClick={event => handleListItemClick(event, 2)}>
             <ListItemIcon>
               <Icon>group</Icon>
             </ListItemIcon>
@@ -52,7 +61,9 @@ function AppSidebar() {
           </ListItem>
         </Link>
         <Link underline="none" color="inherit" component={RouterLink} to="/posts">
-          <ListItem button>
+          <ListItem button
+            selected={selectedIndex === 3}
+            onClick={event => handleListItemClick(event, 3)}>
             <ListItemIcon>
               <Icon>list</Icon>
             </ListItemIcon>
@@ -60,7 +71,9 @@ function AppSidebar() {
           </ListItem>
         </Link>
         <Link underline="none" color="inherit" component={RouterLink} to="/albums">
-          <ListItem button>
+          <ListItem button
+            selected={selectedIndex === 4}
+            onClick={event => handleListItemClick(event, 4)}>
             <ListItemIcon>
               <Icon>collections</Icon>
             </ListItemIcon>
