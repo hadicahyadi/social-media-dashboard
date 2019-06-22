@@ -14,6 +14,7 @@ module.exports = {
     }
   },
   entry: './src/index.js',
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {
@@ -40,6 +41,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       inject: true
+    }),
+    new webpack.DefinePlugin({
+      API_URL: JSON.stringify('https://jsonplaceholder.typicode.com')
     })
   ],
   resolve: {
