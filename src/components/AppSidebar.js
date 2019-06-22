@@ -12,6 +12,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import AppNavLink from '@/components/AppNavLink';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -40,46 +42,10 @@ function AppSidebar() {
       classes={{ paper: classes.drawerPaper }}>
       <div className={classes.toolbar} />
       <List>
-        <Link underline="none" color="inherit" component={RouterLink} to="/">
-          <ListItem button
-            selected={selectedIndex === 1}
-            onClick={event => handleListItemClick(event, 1)}>
-            <ListItemIcon>
-              <Icon>home</Icon>
-            </ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItem>
-        </Link>
-        <Link underline="none" color="inherit" component={RouterLink} to="/users">
-          <ListItem button
-            selected={selectedIndex === 2}
-            onClick={event => handleListItemClick(event, 2)}>
-            <ListItemIcon>
-              <Icon>group</Icon>
-            </ListItemIcon>
-            <ListItemText primary="Users" />
-          </ListItem>
-        </Link>
-        <Link underline="none" color="inherit" component={RouterLink} to="/posts">
-          <ListItem button
-            selected={selectedIndex === 3}
-            onClick={event => handleListItemClick(event, 3)}>
-            <ListItemIcon>
-              <Icon>list</Icon>
-            </ListItemIcon>
-            <ListItemText primary="Posts" />
-          </ListItem>
-        </Link>
-        <Link underline="none" color="inherit" component={RouterLink} to="/albums">
-          <ListItem button
-            selected={selectedIndex === 4}
-            onClick={event => handleListItemClick(event, 4)}>
-            <ListItemIcon>
-              <Icon>collections</Icon>
-            </ListItemIcon>
-            <ListItemText primary="Albums" />
-          </ListItem>
-        </Link>
+        <AppNavLink to="/" icon="home" text="Home" />
+        <AppNavLink to="/users" icon="group" text="Users" />
+        <AppNavLink to="/posts" icon="list" text="Posts" />
+        <AppNavLink to="/albums" icon="collections" text="Albums" />
       </List>
     </Drawer>
   )

@@ -3,8 +3,8 @@ import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 
-import AppHeader from '@/components/AppHeader';
-import AppSidebar from '@/components/AppSidebar';
+import AppHeader from './AppHeader';
+import AppSidebar from './AppSidebar';
 import AppRouter from '@/AppRouter';
 
 const useStyles = makeStyles(theme => ({
@@ -13,7 +13,9 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    marginTop: theme.spacing(8)
+    marginTop: theme.spacing(8),
+    marginBottom: theme.spacing(3),
+    paddingTop: theme.spacing(2)
   },
 }));
 
