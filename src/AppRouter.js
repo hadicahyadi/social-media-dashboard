@@ -4,8 +4,8 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import Home from '@/pages/Home';
 import Users from '@/pages/Users';
-import Posts from '@/pages/Posts';
-import PostDetail from '@/pages/PostDetail';
+import Posts from '@/pages/posts/Posts';
+import PostDetail from '@/pages/posts/PostDetail';
 import Albums from '@/pages/Albums';
 import Photos from '@/pages/Photos';
 

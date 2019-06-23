@@ -33,6 +33,14 @@ const HttpApi = {
       )
     });
   },
+  savePost: (payload) => {
+    return new Promise((resolve, reject) => {
+      axios.post(`${API_URL}/posts`, payload).then(
+        resp => resolve(resp.data),
+        err => reject()
+      )
+    })
+  },
   fetchCommentsByPost: (postId) => {
     return new Promise((resolve, reject) => {
       axios.get(`${API_URL}/comments?postId=${postId}`).then(

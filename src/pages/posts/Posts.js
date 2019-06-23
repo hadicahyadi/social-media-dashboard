@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
+import Icon from '@material-ui/core/Icon';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -16,40 +17,56 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import PostModal from './PostModal';
+
 import HttpApi from '@/services/HttpApi';
 
 class Posts extends Component {
 
   state = {
     posts: [],
+    users: [],
     pagination: {
       perPage: 10,
       page: 0,
       total: 0
-    }
+    },
+    dialogOpen: false,
+    dialogAction: 'Add'
   }
 
-  getPosts() {
+  async getPosts() {
     let { perPage, page } = this.state.pagination;
-    const promises = [
-      HttpApi.fetchPosts(perPage * page, perPage),
-      HttpApi.fetchUsers()
-    ];
-    Promise.all(promises).then(
-      resp => {
-        const { headers } = resp[0];
+    let posts = await HttpApi.fetchPosts(perPage * page, perPage);
+    let users = await HttpApi.fetchUsers();
 
-        this.setState({
-          pagination: {...this.state.pagination, total: parseInt(headers['x-total-count'])}
-        });
+    let postsWithUser = posts.data.map(post => ({
+      ...post,
+      username: users.find(user => user.id === post.userId).username
+    }));
 
-        let tmp = resp[0].data.map(post => ({
-          ...post,
-          user: resp[1].find(user => user.id === post.userId)
-        }));
-        this.setState({posts: tmp});
-      }
-    )
+    this.setState({
+      posts: postsWithUser,
+      users: users,
+      pagination: {...this.state.pagination, total: parseInt(posts.headers['x-total-count'])}
+    });
+  }
+  handleDialogOpen = (action, selectedPost) => {
+    this.setState({dialogOpen: true})
+  }
+
+  handleDialogClose = savedPost => {
+    console.log(savedPost);
+    if (savedPost) {
+      let { posts, users, pagination } = this.state;
+      posts.unshift(savedPost);
+      pagination.total++;
+      this.setState({
+        posts: posts,
+        pagination: pagination
+      })
+    }
+    this.setState({dialogOpen: false});
   }
 
   handleChangePage = (event, newPage) => {
@@ -66,9 +83,15 @@ class Posts extends Component {
   render() {
     return (
       <Fragment>
-        <Typography variant="h5" gutterBottom>
-          Posts
-        </Typography>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
+          <Typography variant="h5">
+            Posts
+          </Typography>
+          <Button size="small" variant="contained" color="secondary" onClick={() => this.handleDialogOpen('Add')}>
+            Add
+            <Icon fontSize="small">add</Icon>
+          </Button>
+        </div>
         <Paper>
           <div>
             <List>
@@ -82,7 +105,7 @@ class Posts extends Component {
                             {post.title}
                           </Typography>
                           <Typography variant="body2" component="div" color="textPrimary">
-                            @{post.user.username}
+                            @{post.username}
                           </Typography>
                           <Typography variant="body2" component="div" noWrap style={{width: '100%'}}>
                             {post.body}
@@ -91,7 +114,13 @@ class Posts extends Component {
                       }
                     />
                     <Box>
-                      <Button size="small" variant="text" color="secondary">Edit</Button>
+                      <Button
+                        size="small"
+                        variant="text"
+                        color="secondary"
+                        onClick={() => this.handleDialogOpen('Edit', post)}>
+                        Edit
+                      </Button>
                     </Box>
                   </ListItem>
                   <Divider component="li" />
@@ -115,6 +144,12 @@ class Posts extends Component {
           />
           <Divider />
         </Paper>
+
+        <PostModal
+          open={this.state.dialogOpen}
+          action={this.state.dialogAction}
+          onClose={this.handleDialogClose}
+          users={this.state.users} />
       </Fragment>
     )
   }
