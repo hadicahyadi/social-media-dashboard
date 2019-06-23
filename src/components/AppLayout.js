@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
+    overflowX: 'hidden',
     marginTop: theme.spacing(8),
     marginBottom: theme.spacing(3),
     paddingTop: theme.spacing(2)
