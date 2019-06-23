@@ -41,6 +41,15 @@ const HttpApi = {
       )
     })
   },
+  updatePost: (payload) => {
+    console.log(payload)
+    return new Promise((resolve, reject) => {
+      axios.put(`${API_URL}/posts/${payload.id}`, payload).then(
+        resp => resolve(resp.data),
+        err => reject()
+      )
+    })
+  },
   fetchCommentsByPost: (postId) => {
     return new Promise((resolve, reject) => {
       axios.get(`${API_URL}/comments?postId=${postId}`).then(

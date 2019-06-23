@@ -5,6 +5,9 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -21,6 +24,12 @@ import PostModal from './PostModal';
 
 import HttpApi from '@/services/HttpApi';
 
+const emptyPostModel = {
+  body: '',
+  userId: 0,
+  title: ''
+}
+
 class Posts extends Component {
 
   state = {
@@ -32,7 +41,9 @@ class Posts extends Component {
       total: 0
     },
     dialogOpen: false,
-    dialogAction: 'Add'
+    dialogAction: 'Add',
+    menuOpen: null,
+    selectedPost: emptyPostModel
   }
 
   async getPosts() {
@@ -51,32 +62,85 @@ class Posts extends Component {
       pagination: {...this.state.pagination, total: parseInt(posts.headers['x-total-count'])}
     });
   }
-  handleDialogOpen = (action, selectedPost) => {
-    this.setState({dialogOpen: true})
+  handleDialogOpen = (selectedPost) => {
+    if (selectedPost) {
+      this.setState({selectedPost: selectedPost});
+    }
+    this.setState({dialogOpen: true});
   }
 
-  handleDialogClose = savedPost => {
-    console.log(savedPost);
-    if (savedPost) {
-      let { posts, users, pagination } = this.state;
-      posts.unshift(savedPost);
-      pagination.total++;
-      this.setState({
-        posts: posts,
-        pagination: pagination
+  handleDialogClose = action => {
+    let { selectedPost, users, posts } = this.state;
+    if (action === 'save') {
+      if (selectedPost.id) {
+        HttpApi.updatePost(selectedPost).then(
+          resp => {
+            let idx = posts.findIndex(post => post.id === resp.id);
+            resp.username = users.find(user => user.id === resp.userId).username;
+            posts[idx] = resp;
+            this.setState({
+              posts: posts,
+              dialogOpen: false,
+              selectedPost: emptyPostModel
+            });
+          }
+        )
+      } else {
+        let { posts, users, pagination } = this.state;
+        HttpApi.savePost(selectedPost).then(
+          resp => {
+            let { username } = users.find(user => user.id === resp.userId);
+            resp.username = username;
+            posts.unshift(resp);
+            pagination.total++;
+            this.setState({
+              posts: posts,
+              pagination: pagination,
+              dialogOpen: false,
+              selectedPost: emptyPostModel
+            });
+          }
+        )
+      }
+    } else {
+      this.setState({dialogOpen: false});
+      setTimeout(() => {
+        this.setState({selectedPost: emptyPostModel});
       })
     }
-    this.setState({dialogOpen: false});
   }
 
   handleChangePage = (event, newPage) => {
+    let { pagination } = this.state;
+    pagination.page = newPage;
     this.setState({
-      pagination: {...this.state.pagination, page: newPage}
+      pagination: pagination
     }, () => this.getPosts());
+  }
+
+  handleEditPost = (key, value) => {
+    this.setState({
+      selectedPost: {
+        ...this.state.selectedPost,
+        [key]: value
+      }
+    });
+  }
+
+  handleDeletePost = (postId) => {
+    let { posts, pagination } = this.state;
+    let idx = posts.findIndex(post => post.id === postId);
+    posts.splice(idx, 1);
+    pagination.total--;
+    this.setState({
+      posts: posts,
+      pagination: pagination
+    });
   }
 
   componentDidMount() {
     this.getPosts();
+    console.log(this.state)
   }
 
 
@@ -87,7 +151,7 @@ class Posts extends Component {
           <Typography variant="h5">
             Posts
           </Typography>
-          <Button size="small" variant="contained" color="secondary" onClick={() => this.handleDialogOpen('Add')}>
+          <Button size="small" variant="contained" color="secondary" onClick={() => this.handleDialogOpen()}>
             Add
             <Icon fontSize="small">add</Icon>
           </Button>
@@ -97,7 +161,7 @@ class Posts extends Component {
             <List>
               {this.state.posts.map(post => (
                 <Fragment key={post.id}>
-                  <ListItem button component={Link} to={`/posts/${post.id}`}>
+                  <ListItem>
                     <ListItemText
                       primary={
                         <Fragment>
@@ -113,16 +177,32 @@ class Posts extends Component {
                         </Fragment>
                       }
                     />
-                    <Box>
-                      <Button
-                        size="small"
-                        variant="text"
+                    <div>
+                      <IconButton
                         color="secondary"
-                        onClick={() => this.handleDialogOpen('Edit', post)}>
-                        Edit
-                      </Button>
-                    </Box>
+                        onClick={() => this.handleDeletePost(post.id)}>
+                        <Icon>delete</Icon>
+                      </IconButton>
+                    </div>
                   </ListItem>
+
+                  <Box pl={1} pb={1}>
+                    <Button
+                      size="small"
+                      variant="text"
+                      color="primary"
+                      component={Link}
+                      to={`/posts/${post.id}`}>
+                      Details
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="text"
+                      color="primary"
+                      onClick={() => this.handleDialogOpen(post)}>
+                      Edit
+                    </Button>
+                  </Box>
                   <Divider component="li" />
                 </Fragment>
               ))}
@@ -147,9 +227,11 @@ class Posts extends Component {
 
         <PostModal
           open={this.state.dialogOpen}
-          action={this.state.dialogAction}
+          onModelChange={this.handleEditPost}
           onClose={this.handleDialogClose}
-          users={this.state.users} />
+          users={this.state.users}
+          posts={this.state.posts}
+          selectedPost={this.state.selectedPost} />
       </Fragment>
     )
   }

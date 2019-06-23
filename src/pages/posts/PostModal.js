@@ -36,34 +36,30 @@ class PostModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      post: {
-        body: '',
-        title: '',
-        userId: ''
-      }
+      value: {}
     }
   }
 
   handleChange = key => event => {
-    this.setState({ post: {
-      ...this.state.post,
-      [key]: event.target.value
-    }});
+    clearTimeout(this.timer);
+    this.setState({value: {[key]: event.target.value}})
+    const { onModelChange } = this.props;
+    this.timer = setTimeout(() => {
+      onModelChange(Object.keys(this.state.value)[0], this.state.value[key]);
+    });
   }
 
-  async handleClose(caller) {
-    const { onClose, users } = this.props;
-    if (caller === 'save') {
-      let savedPost = await HttpApi.savePost(this.state.post);
-      savedPost.username = users.find(user => user.id === savedPost.userId).username;
-      onClose(savedPost);
-    } else {
-      onClose();
-    }
+  handleClose(caller) {
+    const { onClose } = this.props;
+    onClose(caller);
+  }
+
+  async componentDidMount() {
+    this.timer = null;
   }
 
   render() {
-    const { classes, action, open, onClose, users } = this.props;
+    const { classes, action, open, onClose, users, selectedPost } = this.props;
     // const { users } = this.state;
 
     return (
@@ -71,7 +67,7 @@ class PostModal extends Component {
         aria-labelledby="dialog-title"
         open={open}>
         <DialogTitle id="dialog-title">
-          {action ? action : 'Add'} Post
+          {selectedPost.id ? 'Edit Post' : 'Add Post'}
         </DialogTitle>
         <Divider />
         <DialogContent>
@@ -79,7 +75,7 @@ class PostModal extends Component {
             <TextField
               className={classes.inputField}
               label="Title"
-              value={this.state.post.title}
+              value={selectedPost.title}
               onChange={this.handleChange('title')}
               margin="normal"
             />
@@ -88,7 +84,7 @@ class PostModal extends Component {
               label="Body"
               multiline
               rows="2"
-              value={this.state.post.body}
+              value={selectedPost.body}
               onChange={this.handleChange('body')}
               margin="normal"
             />
@@ -96,7 +92,7 @@ class PostModal extends Component {
               className={classes.formControl}>
               <InputLabel htmlFor="user">User</InputLabel>
               <Select
-                value={this.state.post.userId}
+                value={selectedPost.userId}
                 onChange={this.handleChange('userId')}
                 inputProps={{
                   name: 'User',
@@ -121,10 +117,9 @@ class PostModal extends Component {
 
 PostModal.propTypes = {
   classes: PropTypes.object.isRequired,
-  action: PropTypes.string,
-  onClose: PropTypes.func,
-  open: PropTypes.bool,
-  users: PropTypes.array,
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  users: PropTypes.array.isRequired,
   selectedPost: PropTypes.object
 };
 
