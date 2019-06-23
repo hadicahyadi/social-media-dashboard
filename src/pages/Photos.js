@@ -6,7 +6,12 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import Modal from 'react-modal';
 import { withStyles } from '@material-ui/core/styles';
+
+import AppPhotoModal from '@/components/AppPhotoModal';
 
 import HttpApi from '@/services/HttpApi';
 
@@ -16,14 +21,36 @@ const styles = theme => ({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     overflow: 'hidden'
+  },
+  photoModal: {
+    position: 'absolute',
+    width: 600,
+    outline: 'none',
+  },
+  icon: {
+    color: 'rgba(255, 255, 255, 0.54)',
   }
 });
+// react-modal content style
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
 
 class Photos extends Component {
   state = {
     photos: [],
     album: {},
-    user: {}
+    user: {},
+    photo: {},
+    isModalOpen: false
   }
 
   async getPhotos() {
@@ -33,11 +60,22 @@ class Photos extends Component {
     this.setState({photos: photos, album: album, user: user});
   }
 
+  handleOpenModal = photoId => {
+    let photo = this.state.photos.find(photo => photo.id === photoId)
+    this.setState({isModalOpen: !this.state.isModalOpen, photo: photo});
+  }
+
+  handleCloseModal = () => {
+    this.setState({ isModalOpen: false });
+  }
+
   componentDidMount() {
     this.getPhotos();
   }
+
   render() {
     const { classes } = this.props;
+
     return(
       <Fragment>
         <Typography variant="h5" gutterBottom>
@@ -62,12 +100,28 @@ class Photos extends Component {
                   <img src={photo.url} alt={photo.title} />
                   <GridListTileBar
                     title={photo.title}
+                    actionIcon={
+                      <IconButton
+                        className={classes.icon}
+                        onClick={() => this.handleOpenModal(photo.id)}>
+                        <Icon>info</Icon>
+                      </IconButton>
+                    }
                   />
                 </GridListTile>
               ))}
             </GridList>
           </div>
         </Paper>
+        <Modal
+          isOpen={this.state.isModalOpen}
+          onRequestClose={this.handleCloseModal}
+          style={customStyles}
+          className={classes.photoModal}>
+          <AppPhotoModal
+            imageUrl={this.state.photo.url}
+            title={this.state.photo.title} />
+        </Modal>
       </Fragment>
     )
   }
