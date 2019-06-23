@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -10,12 +11,16 @@ import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 
+
 import HttpApi from '@/services/HttpApi';
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
     marginBottom: theme.spacing(3)
+  },
+  button: {
+    textDecoration: 'none'
   }
 });
 
@@ -78,7 +83,9 @@ class Albums extends Component {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button color="secondary" size="small">View Photos</Button>
+                    <Link className={classes.button} to={`/albums/${album.id}`}>
+                      <Button color="secondary" size="small">View Photos</Button>
+                    </Link>
                   </CardActions>
                 </Card>
               </Grid>

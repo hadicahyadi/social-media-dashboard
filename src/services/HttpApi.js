@@ -48,6 +48,22 @@ const HttpApi = {
         err => reject()
       )
     });
+  },
+  fetchAlbum: (albumId) => {
+    return new Promise((resolve, reject) => {
+      axios.get(`${API_URL}/albums/${albumId}`).then(
+        resp => resolve(resp.data),
+        err => reject()
+      )
+    });
+  },
+  fetchPhotosByAlbum: (albumId) => {
+    return new Promise((resolve, reject) => {
+      axios.get(`${API_URL}/photos?albumId=${albumId}`).then(
+        resp => resolve(resp.data),
+        err => reject()
+      )
+    });
   }
 }
 export default HttpApi;
