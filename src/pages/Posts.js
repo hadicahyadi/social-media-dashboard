@@ -1,5 +1,8 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -71,23 +74,25 @@ class Posts extends Component {
             <List>
               {this.state.posts.map(post => (
                 <Fragment key={post.id}>
-                  <ListItem button>
+                  <ListItem button component={Link} to={`/posts/${post.id}`}>
                     <ListItemText
                       primary={
                         <Fragment>
-                          <Typography variant="h6" component="span">
+                          <Typography variant="h6" component="div">
                             {post.title}
                           </Typography>
-                        </Fragment>
-                      }
-                      secondary={
-                        <Fragment>
-                          <Typography component="span">
+                          <Typography variant="body2" component="div" color="textPrimary">
                             @{post.user.username}
+                          </Typography>
+                          <Typography variant="body2" component="div" noWrap style={{width: '100%'}}>
+                            {post.body}
                           </Typography>
                         </Fragment>
                       }
                     />
+                    <Box>
+                      <Button size="small" variant="text" color="secondary">Edit</Button>
+                    </Box>
                   </ListItem>
                   <Divider component="li" />
                 </Fragment>
@@ -108,6 +113,7 @@ class Posts extends Component {
             }}
             onChangePage={this.handleChangePage}
           />
+          <Divider />
         </Paper>
       </Fragment>
     )
