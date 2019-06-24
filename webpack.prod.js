@@ -15,7 +15,10 @@ module.exports = {
         collapseWhitespace: true,
         removeComments: true
       }
-    })
+    }),
+    new webpack.DefinePlugin({
+      'process.env': { NODE_ENV: JSON.stringify('production') }
+    }),
   ],
   output: {
 		path: path.join(__dirname, 'dist'),
