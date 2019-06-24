@@ -28,7 +28,7 @@ Install dependencies
 ``` bash
 npm i
 ```
-Run dev server
+Run locally
 ``` bash
 npm run serve
 # application will served on `http://localhost:8000`
