@@ -1,54 +1,15 @@
-const path = require('path');
-const webpack = require('webpack');
+const Merge = require('webpack-merge');
+const common = require('./webpack.common.js');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+/**
+ * Load the correct configuration file.
+ *
+ */
+module.exports = function (env) {
+  var config;
 
-module.exports = {
-  mode: 'development',
-  devServer: {
-    port: 8080,
-    historyApiFallback: true,
-    hot: true,
-    watchOptions: {
-      poll: true
-    }
-  },
-  entry: './src/index.js',
-  devtool: 'eval-source-map',
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: 'babel-loader'
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        exclude: [/fonts/],
-        use: {
-          loader: 'file-loader'
-        }
-      },
-      {
-        test: /\.(woff2?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'file-loader'
-        }
-      }
-    ]
-  },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-      template: 'src/index.html',
-      inject: true
-    }),
-    new webpack.DefinePlugin({
-      API_URL: JSON.stringify('https://jsonplaceholder.typicode.com')
-    })
-  ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src/')
-    }
-  }
-}
+  env = env || 'dev';
+  config = require(`./webpack.${env}.js`);
+
+  return Merge(common, config);
+};
