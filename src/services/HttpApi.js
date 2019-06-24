@@ -35,6 +35,9 @@ const HttpApi = {
   },
   savePost: (payload) => {
     return new Promise((resolve, reject) => {
+      if (process.env.NODE_ENV === 'test') {
+        resolve({...payload, id: 1})
+      }
       axios.post(`${API_URL}/posts`, payload).then(
         resp => resolve(resp.data),
         err => reject()
@@ -43,6 +46,9 @@ const HttpApi = {
   },
   updatePost: (payload) => {
     return new Promise((resolve, reject) => {
+      if (process.env.NODE_ENV === 'test') {
+        resolve(payload)
+      }
       axios.put(`${API_URL}/posts/${payload.id}`, payload).then(
         resp => resolve(resp.data),
         err => reject()
@@ -59,6 +65,9 @@ const HttpApi = {
   },
   saveComment: (payload) => {
     return new Promise((resolve, reject) => {
+      if (process.env.NODE_ENV === 'test') {
+        resolve({...payload, id: 1})
+      }
       axios.post(`${API_URL}/comments`, payload).then(
         resp => resolve(resp.data),
         err => reject()
@@ -67,6 +76,9 @@ const HttpApi = {
   },
   updateComment: (payload) => {
     return new Promise((resolve, reject) => {
+      if (process.env.NODE_ENV === 'test') {
+        resolve(payload)
+      }
       axios.put(`${API_URL}/comments/${payload.id}`, payload).then(
         resp => resolve(resp.data),
         err => reject()
