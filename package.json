@@ -2,7 +2,7 @@
   "name": "social-media-dashboard",
   "version": "1.0.0",
   "description": "Simple dashboard app for JSONplaceholder",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "serve": "webpack-dev-server --progress",
     "build": "webpack --env=prod --mode production --colors --progress",
