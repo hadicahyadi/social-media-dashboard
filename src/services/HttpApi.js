@@ -42,7 +42,6 @@ const HttpApi = {
     })
   },
   updatePost: (payload) => {
-    console.log(payload)
     return new Promise((resolve, reject) => {
       axios.put(`${API_URL}/posts/${payload.id}`, payload).then(
         resp => resolve(resp.data),
@@ -57,6 +56,22 @@ const HttpApi = {
         err => reject()
       )
     });
+  },
+  saveComment: (payload) => {
+    return new Promise((resolve, reject) => {
+      axios.post(`${API_URL}/comments`, payload).then(
+        resp => resolve(resp.data),
+        err => reject()
+      )
+    })
+  },
+  updateComment: (payload) => {
+    return new Promise((resolve, reject) => {
+      axios.put(`${API_URL}/comments/${payload.id}`, payload).then(
+        resp => resolve(resp.data),
+        err => reject()
+      )
+    })
   },
   fetchAlbums: (start, limit) => {
     return new Promise((resolve, reject) => {

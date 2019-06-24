@@ -62,6 +62,7 @@ class Posts extends Component {
       pagination: {...this.state.pagination, total: parseInt(posts.headers['x-total-count'])}
     });
   }
+
   handleDialogOpen = (selectedPost) => {
     if (selectedPost) {
       this.setState({selectedPost: selectedPost});
@@ -140,7 +141,6 @@ class Posts extends Component {
 
   componentDidMount() {
     this.getPosts();
-    console.log(this.state)
   }
 
 
