@@ -9,9 +9,6 @@ const port = process.env.PORT || 8080;
 var options = {
   index: "index.html"
 };
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-// app.use('/', express.static('dist', options));
+app.use('/', express.static('dist', options));
 
 app.listen(port);
