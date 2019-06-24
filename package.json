@@ -6,6 +6,7 @@
   "scripts": {
     "serve": "webpack-dev-server --progress",
     "build": "webpack --env=prod --mode production --colors --progress",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hadi Cahyadi",
@@ -29,6 +30,7 @@
   "dependencies": {
     "@material-ui/core": "^4.1.1",
     "axios": "^0.19.0",
+    "jest": "^24.8.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-modal": "^3.8.1",
