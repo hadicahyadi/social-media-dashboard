@@ -18,7 +18,7 @@ The API is provided by [JSONplaceholder](https://jsonplaceholder.typicode.com/).
 - Albums
   - View list of albums
   - View album's photos
-  
+
 ## Installation
 Clone project
 ``` bash
@@ -46,8 +46,8 @@ npm run start
 # it will served files from `dist` directory then go to `http://localhost:8000`
 ```
 
-Test
+Test (WIP)
 ``` bash
 npm run test
-# only cover api functionality test
+# only cover api functionality and "cheap" unit test 😅
 ```
