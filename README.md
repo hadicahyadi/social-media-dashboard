@@ -49,5 +49,4 @@ npm run start
 Test (WIP)
 ``` bash
 npm run test
-# only cover api functionality and "cheap" unit test 😅
 ```
